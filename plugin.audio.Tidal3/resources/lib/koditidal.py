@@ -43,12 +43,12 @@ class KodiPlugin(Plugin):
             pass
         self.base_url = base_url
 
-_addon_id = 'plugin.audio.tidal2'
+_addon_id = 'plugin.audio.tidal3'
 addon = xbmcaddon.Addon(id=_addon_id)
 plugin = KodiPlugin(base_url = "plugin://" + _addon_id)
 plugin.name = addon.getAddonInfo('name')
-_addon_icon = os.path.join(addon.getAddonInfo('path').decode('utf-8'), 'icon.png')
-_addon_fanart = os.path.join(addon.getAddonInfo('path').decode('utf-8'), 'fanart.jpg')
+_addon_icon = os.path.join(addon.getAddonInfo('path'), 'icon.png')
+_addon_fanart = os.path.join(addon.getAddonInfo('path'), 'fanart.jpg')
 
 debug = DebugHelper(pluginName=addon.getAddonInfo('name'), 
                     detailLevel=2 if addon.getSetting('debug_log') == 'true' else 1, 
@@ -62,7 +62,7 @@ try:
 except:
     KODI_VERSION = (16, 1)
 
-CACHE_DIR = xbmc.translatePath(addon.getAddonInfo('profile')).decode('utf-8')
+CACHE_DIR = xbmc.translatePath(addon.getAddonInfo('profile'))
 FAVORITES_FILE = os.path.join(CACHE_DIR, 'favorites.cfg')
 LOCKED_ARTISTS_FILE = os.path.join(CACHE_DIR, 'locked_artists.cfg')
 PLAYLISTS_FILE = os.path.join(CACHE_DIR, 'playlists.cfg')

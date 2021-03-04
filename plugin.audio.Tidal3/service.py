@@ -21,11 +21,7 @@
 import requests
 from urllib.parse import urlparse, parse_qs
 from threading import Thread
-try:
-    from http.server import BaseHTTPRequestHandler, HTTPServer
-except:
-    # for Python 3
-    from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import xbmc, xbmcgui
 
 from resources.lib.koditidal import TidalConfig, LoginToken, Quality, debug, addon, _T

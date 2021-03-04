@@ -109,7 +109,7 @@ def homepage_items():
 
 @plugin.route('/homepage_item/<item_type>/<path>')
 def homepage_item(item_type, path):
-    path = urllib.parse.unquote_plus(path).decode('utf-8').strip()
+    path = urllib.parse.unquote_plus(path).strip()
     rettype = HOMEPAGE_ITEM_TYPES.get(item_type, 'NONE')
     if rettype != 'NONE':
         params = { 'locale': session._config.locale, 'deviceType': 'BROWSER', 'offset': 0, 'limit': 50 }
@@ -327,8 +327,8 @@ def user_playlists():
     # Find Default Playlists via title if ID is not available anymore
     all_ids = list(session.user.playlists_cache.keys())
     for what in ['track', 'album', 'video']:
-        playlist_id = addon.getSetting('default_%splaylist_id' % what).decode('utf-8')
-        playlist_title = addon.getSetting('default_%splaylist_title' % what).decode('utf-8')
+        playlist_id = addon.getSetting('default_%splaylist_id' % what)
+        playlist_title = addon.getSetting('default_%splaylist_title' % what)
         if playlist_id and playlist_title and playlist_id not in all_ids:
             for playlist_id in all_ids:
                 if session.user.playlists_cache.get(playlist_id).get('title', '') == playlist_title:
@@ -521,22 +521,22 @@ def user_playlist_toggle():
         return
     if 'play_track/' in url:
         item_type = 'track'
-        userpl_id = addon.getSetting('default_trackplaylist_id').decode('utf-8')
-        userpl_name = addon.getSetting('default_trackplaylist_title').decode('utf-8')
+        userpl_id = addon.getSetting('default_trackplaylist_id')
+        userpl_name = addon.getSetting('default_trackplaylist_title')
         item_id = url.split('play_track/')[1]
         item_id = item_id.split('/')[0]
         item = session.get_track(item_id)
     elif 'play_video/' in url:
         item_type = 'video'
-        userpl_id = addon.getSetting('default_videoplaylist_id').decode('utf-8')
-        userpl_name = addon.getSetting('default_videoplaylist_title').decode('utf-8')
+        userpl_id = addon.getSetting('default_videoplaylist_id')
+        userpl_name = addon.getSetting('default_videoplaylist_title')
         item_id = url.split('play_video/')[1]
         item_id = item_id.split('/')[0]
         item = session.get_video(item_id)
     elif 'album/' in url:
         item_type = 'album'
-        userpl_id = addon.getSetting('default_albumplaylist_id').decode('utf-8')
-        userpl_name = addon.getSetting('default_albumplaylist_title').decode('utf-8')
+        userpl_id = addon.getSetting('default_albumplaylist_id')
+        userpl_name = addon.getSetting('default_albumplaylist_title')
         item_id = url.split('album/')[1]
         item_id = int('0%s' % item_id.split('/')[0])
         item = session.get_album(item_id)
@@ -632,8 +632,8 @@ def cache_reload():
 def favorite_toggle():
     if not session.is_logged_in:
         return
-    path = xbmc.getInfoLabel('Container.FolderPath').decode('utf-8')
-    url = xbmc.getInfoLabel( "ListItem.FileNameAndPath" ).decode('utf-8')
+    path = xbmc.getInfoLabel('Container.FolderPath')
+    url = xbmc.getInfoLabel( "ListItem.FileNameAndPath" )
     if not _addon_id in url or '/favorites/' in path:
         return
     try:
@@ -691,8 +691,8 @@ def search():
 
 @plugin.route('/search_type/<field>')
 def search_type(field):
-    last_field = addon.getSetting('last_search_field').decode('utf-8')
-    search_text = addon.getSetting('last_search_text').decode('utf-8')
+    last_field = addon.getSetting('last_search_field')
+    search_text = addon.getSetting('last_search_text')
     if last_field != field or not search_text:
         addon.setSetting('last_search_field', field)
         keyboard = xbmc.Keyboard('', _T(30206))

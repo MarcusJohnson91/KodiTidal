@@ -55,16 +55,16 @@ class DebugHelper(object):
             if self.detailLevel > 0 or level == xbmc.LOGERROR:
                 if self.detailLevel == 2 and level == xbmc.LOGDEBUG:
                     # More Logging
-                    level = xbmc.LOGNOTICE
+                    level = xbmc.INFO
                 elif self.detailLevel == 3 and (level == xbmc.LOGDEBUG or level == xbmc.LOGSEVERE):
                     # Complex Logging
-                    level = xbmc.LOGNOTICE
+                    level = xbmc.INFO
                 if level != xbmc.LOGSEVERE:
                     if isinstance(txt, str):
                         txt = unidecode(txt)
-                    xbmc.log(b"[%s] %s" % (self.pluginName, txt), level)
+                    xbmc.log("[%s] %s" % (self.pluginName, txt), level)
         except:
-            xbmc.log(b"[%s] Unicode Error in message text" % self.pluginName, xbmc.LOGERROR)
+            xbmc.log("[%s] Unicode Error in message text" % self.pluginName, xbmc.LOGERROR)
 
     def logException(self, e, txt=''):
         ''' Logs an Exception as Error Message '''
@@ -72,7 +72,7 @@ class DebugHelper(object):
             if txt:
                 if isinstance(txt, str):
                     txt = unidecode(txt)
-                xbmc.log(b"[%s] %s\n%s" % (self.pluginName, txt, str(e)), level=xbmc.LOGERROR)
+                xbmc.log("[%s] %s\n%s" % (self.pluginName, txt, str(e)), level=xbmc.LOGERROR)
             logging.exception(str(e))
         except:
             pass
@@ -126,8 +126,8 @@ class KodiLogHandler(logging.StreamHandler):
         logging.StreamHandler.__init__(self)
         self._modules = modules
         self.pluginName = name
-        prefix = b"[%s] " % name
-        formatter = logging.Formatter(prefix + b'%(name)s: %(message)s')
+        prefix = "[%s] " % name
+        formatter = logging.Formatter(prefix + '%(name)s: %(message)s')
         self.setFormatter(formatter)
 
     def emit(self, record):
@@ -138,7 +138,7 @@ class KodiLogHandler(logging.StreamHandler):
             logging.CRITICAL: xbmc.LOGFATAL,
             logging.ERROR: xbmc.LOGERROR,
             logging.WARNING: xbmc.LOGWARNING,
-            logging.INFO: xbmc.LOGNOTICE,
+            logging.INFO: xbmc.INFO,
             logging.DEBUG: xbmc.LOGSEVERE,
             logging.NOTSET: xbmc.LOGNONE,
         }
@@ -148,7 +148,7 @@ class KodiLogHandler(logging.StreamHandler):
             try:
                 xbmc.log(self.format(record).encode('utf-8', 'ignore'), levels[record.levelno])
             except:
-                xbmc.log(b"[%s] Unicode Error in message text" % self.pluginName, levels[record.levelno])
+                xbmc.log("[%s] Unicode Error in message text" % self.pluginName, levels[record.levelno])
 
     def flush(self):
         pass
