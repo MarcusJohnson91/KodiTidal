@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2016 Arne Svenson
+# Copyright (C) 2021 Marcus Johnson
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import sys, os
 import logging
@@ -24,8 +25,8 @@ import xbmc
 try:
     from unidecode import unidecode
 except:
-    def unidecode(txt): 
-        return txt.decode('utf-8', 'ignore') 
+    def unidecode(txt):
+        return txt.decode('utf-8', 'ignore')
 
 #------------------------------------------------------------------------------
 # Debug class
@@ -59,9 +60,9 @@ class DebugHelper(object):
                     # Complex Logging
                     level = xbmc.LOGNOTICE
                 if level != xbmc.LOGSEVERE:
-                    if isinstance(txt, unicode):
+                    if isinstance(txt, str):
                         txt = unidecode(txt)
-                    xbmc.log(b"[%s] %s" % (self.pluginName, txt), level) 
+                    xbmc.log(b"[%s] %s" % (self.pluginName, txt), level)
         except:
             xbmc.log(b"[%s] Unicode Error in message text" % self.pluginName, xbmc.LOGERROR)
 
@@ -69,9 +70,9 @@ class DebugHelper(object):
         ''' Logs an Exception as Error Message '''
         try:
             if txt:
-                if isinstance(txt, unicode):
+                if isinstance(txt, str):
                     txt = unidecode(txt)
-                xbmc.log(b"[%s] %s\n%s" % (self.pluginName, txt, str(e)), level=xbmc.LOGERROR) 
+                xbmc.log(b"[%s] %s\n%s" % (self.pluginName, txt, str(e)), level=xbmc.LOGERROR)
             logging.exception(str(e))
         except:
             pass

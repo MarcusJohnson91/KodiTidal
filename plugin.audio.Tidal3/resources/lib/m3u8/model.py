@@ -1,5 +1,6 @@
 # coding: utf-8
 # Copyright 2014 Globo.com Player authors. All rights reserved.
+# Copyright 2021 Marcus Johnson
 # Use of this source code is governed by a MIT License
 # license that can be found in the LICENSE file.
 
@@ -9,7 +10,7 @@ import errno
 import math
 
 try:
-    import urlparse as url_parser
+    import urllib.parse as url_parser
 except ImportError:
     import urllib.parse as url_parser
 
@@ -497,7 +498,7 @@ class Playlist(BasePathMixin):
             if not group_id:
                 continue
 
-            self.media += filter(lambda m: m.group_id == group_id, media)
+            self.media += [m for m in media if m.group_id == group_id]
 
     def __str__(self):
         stream_inf = []

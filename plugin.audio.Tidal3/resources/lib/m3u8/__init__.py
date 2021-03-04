@@ -1,5 +1,6 @@
 # coding: utf-8
 # Copyright 2014 Globo.com Player authors. All rights reserved.
+# Copyright 2021 Marcus Johnson Python3 transition
 # Use of this source code is governed by a MIT License
 # license that can be found in the LICENSE file.
 
@@ -10,9 +11,9 @@ import os
 import posixpath
 
 try:
-    import urlparse as url_parser
-    import urllib2
-    urlopen = urllib2.urlopen
+    import urllib.parse as url_parser
+    import urllib.request, urllib.error, urllib.parse
+    urlopen = urllib.request.urlopen
 except ImportError:
     import urllib.parse as url_parser
     from urllib.request import urlopen as url_opener
@@ -53,7 +54,7 @@ def _load_from_uri(uri, timeout = None):
         content = _read_python3x(resource)
     try:
         # Read Cookies from the response header
-        from Cookie import SimpleCookie
+        from http.cookies import SimpleCookie
         cookies = SimpleCookie(resource.info()['Set-Cookie'])
     except:
         cookies = None

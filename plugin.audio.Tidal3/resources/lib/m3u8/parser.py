@@ -1,5 +1,6 @@
 # coding: utf-8
 # Copyright 2014 Globo.com Player authors. All rights reserved.
+# Copyright 2021 Marcus Johnson
 # Use of this source code is governed by a MIT License
 # license that can be found in the LICENSE file.
 
@@ -249,7 +250,7 @@ def string_to_lines(string):
     return string.strip().replace('\r\n', '\n').split('\n')
 
 def remove_quotes_parser(*attrs):
-    return dict(zip(attrs, itertools.repeat(remove_quotes)))
+    return dict(list(zip(attrs, itertools.repeat(remove_quotes))))
 
 def remove_quotes(string):
     '''

@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import sys
 import traceback
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import xbmc
 import xbmcgui
 import xbmcplugin
@@ -76,7 +76,7 @@ def homepage_items():
                     item_type = module['type']
                     if item_type in HOMEPAGE_ITEM_TYPES:
                         apiPath = module['pagedList']['dataApiPath']
-                        item = FolderItem(module['title'], plugin.url_for(homepage_item, item_type, urllib.quote_plus(apiPath)))
+                        item = FolderItem(module['title'], plugin.url_for(homepage_item, item_type, urllib.parse.quote_plus(apiPath)))
                         items.append(item)
                         apiPaths.append(apiPath)
                     else:
@@ -92,7 +92,7 @@ def homepage_items():
                     item_type = module['type']
                     if item_type in HOMEPAGE_ITEM_TYPES:
                         apiPath = module['pagedList']['dataApiPath']
-                        item = FolderItem(module['title'], plugin.url_for(homepage_item, item_type, urllib.quote_plus(apiPath)))
+                        item = FolderItem(module['title'], plugin.url_for(homepage_item, item_type, urllib.parse.quote_plus(apiPath)))
                         if not apiPath in apiPaths:
                             if item_type == 'MIX_LIST':
                                 item.name = item.name + ' (' + _P('videos') + ')'
@@ -109,9 +109,9 @@ def homepage_items():
 
 @plugin.route('/homepage_item/<item_type>/<path>')
 def homepage_item(item_type, path):
-    path = urllib.unquote_plus(path).decode('utf-8').strip()
+    path = urllib.parse.unquote_plus(path).decode('utf-8').strip()
     rettype = HOMEPAGE_ITEM_TYPES.get(item_type, 'NONE')
-    if rettype <> 'NONE':
+    if rettype != 'NONE':
         params = { 'locale': session._config.locale, 'deviceType': 'BROWSER', 'offset': 0, 'limit': 50 }
         items = session._map_request(url=path, method='GET', params=params, ret=rettype)
         session.add_list_items(items, content=CONTENT_FOR_TYPE.get(rettype, 'files'), end=True)
@@ -325,7 +325,7 @@ def playlist_albums(playlist_id, offset):
 def user_playlists():
     items = session.user.playlists()
     # Find Default Playlists via title if ID is not available anymore
-    all_ids = session.user.playlists_cache.keys()
+    all_ids = list(session.user.playlists_cache.keys())
     for what in ['track', 'album', 'video']:
         playlist_id = addon.getSetting('default_%splaylist_id' % what).decode('utf-8')
         playlist_title = addon.getSetting('default_%splaylist_title' % what).decode('utf-8')
@@ -355,7 +355,7 @@ def user_playlist_clear(playlist_id):
         session.show_busydialog(_T(30258), playlist.name)
         try:
             session.user.remove_all_playlist_entries(playlist_id)
-        except Exception, e:
+        except Exception as e:
             log(str(e), level=xbmc.LOGERROR)
             traceback.print_exc()
         session.hide_busydialog()
@@ -371,7 +371,7 @@ def user_playlist_delete(playlist_id):
         session.show_busydialog(_T(30235), playlist.name)
         try:
             session.user.delete_playlist(playlist_id)
-        except Exception, e:
+        except Exception as e:
             log(str(e), level=xbmc.LOGERROR)
             traceback.print_exc()
         session.hide_busydialog()
@@ -404,7 +404,7 @@ def user_playlist_add_item(item_type, item_id):
         session.show_busydialog(_T(30263), playlist.name)
         try:
             session.user.add_playlist_entries(playlist=playlist, item_ids=items)
-        except Exception, e:
+        except Exception as e:
             log(str(e), level=xbmc.LOGERROR)
             traceback.print_exc()
         session.hide_busydialog()
@@ -420,7 +420,7 @@ def user_playlist_remove_item(playlist_id, entry_no):
         session.show_busydialog(_T(30264), playlist.name)
         try:
             session.user.remove_playlist_entry(playlist, entry_no=entry_no)
-        except Exception, e:
+        except Exception as e:
             log(str(e), level=xbmc.LOGERROR)
             traceback.print_exc()
         session.hide_busydialog()
@@ -435,7 +435,7 @@ def user_playlist_remove_id(playlist_id, item_id):
         session.show_busydialog(_T(30264), playlist.name)
         try:
             session.user.remove_playlist_entry(playlist, item_id=item_id)
-        except Exception, e:
+        except Exception as e:
             log(str(e), level=xbmc.LOGERROR)
             traceback.print_exc()
         session.hide_busydialog()
@@ -456,7 +456,7 @@ def user_playlist_remove_album(playlist_id, item_id, dialog=True):
                 if '%s' % item.album.id == '%s' % item_id:
                     session.user.remove_playlist_entry(playlist, entry_no=item._playlist_pos)
                     break # Remove only one Item
-        except Exception, e:
+        except Exception as e:
             log(str(e), level=xbmc.LOGERROR)
             traceback.print_exc()
         session.hide_busydialog()
@@ -467,7 +467,7 @@ def user_playlist_remove_album(playlist_id, item_id, dialog=True):
 def user_playlist_move_entry(playlist_id, entry_no, item_id):
     dialog = xbmcgui.Dialog()
     playlist = session.user.selectPlaylistDialog(headline=_T(30248), allowNew=True)
-    if playlist and playlist.id <> playlist_id:
+    if playlist and playlist.id != playlist_id:
         session.show_busydialog(_T(30265), playlist.name)
         try:
             ok = session.user.add_playlist_entries(playlist=playlist, item_ids=[item_id])
@@ -475,7 +475,7 @@ def user_playlist_move_entry(playlist_id, entry_no, item_id):
                 ok = session.user.remove_playlist_entry(playlist_id, entry_no=entry_no)
             else:
                 dialog.notification(plugin.name, _T('API Call Failed'), xbmcgui.NOTIFICATION_ERROR)
-        except Exception, e:
+        except Exception as e:
             log(str(e), level=xbmc.LOGERROR)
             traceback.print_exc()
         session.hide_busydialog()
@@ -562,7 +562,7 @@ def user_playlist_toggle():
         else:
             session.show_busydialog(_T(30263), userpl_name)
             session.user.add_playlist_entries(playlist=userpl_id, item_ids=['%s' % item.id])
-    except Exception, e:
+    except Exception as e:
         log(str(e), level=xbmc.LOGERROR)
         traceback.print_exc()
     session.hide_busydialog()
@@ -693,7 +693,7 @@ def search():
 def search_type(field):
     last_field = addon.getSetting('last_search_field').decode('utf-8')
     search_text = addon.getSetting('last_search_text').decode('utf-8')
-    if last_field <> field or not search_text:
+    if last_field != field or not search_text:
         addon.setSetting('last_search_field', field)
         keyboard = xbmc.Keyboard('', _T(30206))
         keyboard.doModal()

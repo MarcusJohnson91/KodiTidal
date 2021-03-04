@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2017 Arne Svenson
+# Copyright (C) 2021 Marcus Johnson
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,13 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import requests
-from urlparse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs
 from threading import Thread
 try:
-    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+    from http.server import BaseHTTPRequestHandler, HTTPServer
 except:
     # for Python 3
     from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -82,7 +83,7 @@ class MyHTTPServer(HTTPServer):
             pass
 
 #------------------------------------------------------------------------------
-# Service 
+# Service
 #------------------------------------------------------------------------------
 
 class MyMonitor(xbmc.Monitor):
@@ -115,7 +116,7 @@ class MyMonitor(xbmc.Monitor):
 
     def _stop_servers(self):
         try:
-            if self.http_server <> None and self.http_thread <> None:
+            if self.http_server != None and self.http_thread != None:
                 #self.http_server.server_close()
                 self.http_server.shutdown()
                 self.http_thread.join()
@@ -141,7 +142,7 @@ class MyMonitor(xbmc.Monitor):
             fanart_server_port = self.config.fanart_server_port
             self.config.load()
             if self.config.fanart_server_enabled:
-                if self.config.fanart_server_port <> fanart_server_port or not fanart_server_enabled:
+                if self.config.fanart_server_port != fanart_server_port or not fanart_server_enabled:
                     self._stop_servers()
                     self._start_servers()
             else:
@@ -163,10 +164,10 @@ class MyMonitor(xbmc.Monitor):
                 return False
             api_features = LoginToken.getFeatures(self.config.session_token_name)
             stream_features = LoginToken.getFeatures(self.config.stream_token_name)
-            if self.config.forceHttpVideo and api_features.get('videoMode') <> 'HTTP':
+            if self.config.forceHttpVideo and api_features.get('videoMode') != 'HTTP':
                 log('Changed HTTP Streaming mode. Relogin needed.')
                 return True
-            codec = 'AAC' if self.config.quality <> Quality.lossless else self.config.codec
+            codec = 'AAC' if self.config.quality != Quality.lossless else self.config.codec
             if codec not in stream_features.get('codecs'):
                 log('Changes to Codec needs Relogin.')
                 return True
@@ -201,7 +202,7 @@ class MyMonitor(xbmc.Monitor):
         self.config = None
 
 #------------------------------------------------------------------------------
-# Service 
+# Service
 #------------------------------------------------------------------------------
 
 if __name__ == "__main__":
